@@ -1,6 +1,16 @@
 <h1>Blog posts</h1>
 <?php
 echo $this->Html->link(
+    '新規登録',
+		array(
+			'controller' => 'users',
+			'action' => 'add'
+		)
+);
+?>
+<br>
+<?php
+echo $this->Html->link(
     'Add Post',
 		array(
 			'controller' => 'posts',
