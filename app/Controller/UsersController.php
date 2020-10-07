@@ -4,6 +4,15 @@ class UsersController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('add', 'logout');
+		$this->set('auth', $this->Auth->user());
+		$this->Auth->authenticate =array(
+			'Form' => array(
+				'passwordHasher' => 'Blowfish',
+				'fields' => array(
+					'username' => 'name', 'password' => 'password'
+				)
+			)
+		);
 	}
 	public function login() {
 		if ($this->request->is('post')) {

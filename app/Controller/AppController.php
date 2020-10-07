@@ -44,9 +44,14 @@ class AppController extends Controller {
 			),
 			'authenticate' => array(
 				'Form' => array(
-					'passwordHaher' => 'Blowfish'
+					'passwordHaher' => 'Blowfish',
+					'fields' => array(
+						'username' => 'name',
+						'password' => 'password'
+					)
 				)
-			)
+			),
+			'authorize' => array('Controller')
 		)
 	);
 	public function beforeFilter() {

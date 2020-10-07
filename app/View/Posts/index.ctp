@@ -11,6 +11,16 @@ echo $this->Html->link(
 <br>
 <?php
 echo $this->Html->link(
+    'ログイン',
+		array(
+			'controller' => 'users',
+			'action' => 'login'
+		)
+);
+?>
+<br>
+<?php
+echo $this->Html->link(
     'Add Post',
 		array(
 			'controller' => 'posts',
