@@ -1,5 +1,8 @@
 <h1>Blog posts</h1>
 <?php
+echo 'ようこそ' . $user['name'] . 'さん'
+?>
+<?php
 echo $this->Html->link(
     '新規登録',
 		array(
@@ -28,11 +31,23 @@ echo $this->Html->link(
 		)
 	);
 ?>
+<br>
+<?php
+echo $this->Html->link(
+    'ログアウト',
+		array(
+			'controller' => 'users',
+			'action' => 'logout'
+		)
+	);
+?>
 <table>
 <tr>
 <th>Id</th>
 <th>Title</th>
 <th>Body</th>
+<th>Date</th>
+
 </tr>
 <?php foreach ($posts as $post): ?>
 <tr>
@@ -50,23 +65,30 @@ echo $this->Html->link(
 	);
 ?>
 <?php
-echo $this->Form->postLink(
-	'Delete',
-		array('action' => 'delete', $post['Post']['id']),
-		array('confirm' => 'sure?')
-	);
+if ($post['Post']['user_id'] == $user['id']) {
+	echo $this->Form->postLink(
+		'Delete',
+			array('action' => 'delete', $post['Post']['id']),
+			array('confirm' => 'sure?')
+		);
+}
 ?>
 <?php
-echo $this->Html->link(
-	'Edit',
-		array(
-			'action' => 'edit', $post['Post']['id']
-		)
-	);
+if ($post['Post']['user_id'] == $user['id']) {
+	echo $this->Html->link(
+		'Edit',
+			array(
+				'action' => 'edit', $post['Post']['id']
+			)
+		);
+}
 ?>
 </td>
 <td>
 <?php echo $post['Post']['body']; ?>
+</td>
+<td>
+<?php echo $post['Post']['created']; ?>
 </td>
 </tr>
 <?php endforeach; ?>

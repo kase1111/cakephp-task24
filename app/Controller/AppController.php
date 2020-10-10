@@ -20,7 +20,7 @@
  */
 
 App::uses('Controller', 'Controller');
-
+App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 /**
  * Application Controller
  *
@@ -31,7 +31,20 @@ App::uses('Controller', 'Controller');
  * @link		https://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components = array('DebugKit.Toolbar', 'Flash',
+	public $uses = array('User');
+	public $helpers =array('Html', 'Form', 'Session');
+	public function isAuthorized($user) {
+		if ($this->action === 'add') {
+			return true;
+		}
+		if (in_array($this->action, array('edit', 'delete'))) {
+			$postId = (int) $this->request->params['pass'][0];
+			if ($this->Post->isOwnedBy($postId, $user['id'])) {
+				return true;
+			}
+		}
+	}
+	public $components = array('DebugKit.Toolbar', 'Flash', 'Session',
 		'Auth' => array(
 			'loginRedirect' => array(
 				'controller' => 'posts',
@@ -42,8 +55,13 @@ class AppController extends Controller {
 				'action' => 'index',
 				'home'
 			),
+			'loginAction' => array(
+				'controller' => 'users',
+				'action' => 'login'
+			),
 			'authenticate' => array(
 				'Form' => array(
+					'userModel' => 'User',
 					'passwordHaher' => 'Blowfish',
 					'fields' => array(
 						'username' => 'name',
@@ -56,6 +74,7 @@ class AppController extends Controller {
 	);
 	public function beforeFilter() {
 		$this->Auth->allow('index', 'view');
+		$this->set('userinfo', $this->Auth->user());
 	}
 }
 ?>

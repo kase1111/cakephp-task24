@@ -1,29 +1,60 @@
 <?php
 App::uses('AppController', 'Controller');
 class UsersController extends AppController {
+	public $helpers = array('Html', 'Form', 'Flash');
+/*	public $components = array('Flash',
+		'Auth' => array(
+			'loginRedirect' => array(
+				'controller' => 'posts',
+				'action' => 'index'
+			),
+			'logoutRedirect' => array(
+			'controller' => 'posts',
+			'action' => 'index',
+			'home'
+			),
+			'authenticate' => array(
+				'Form' => array(
+					'userModel' => 'User',
+					'passwordHasher' => Blowfish,
+					'fields' => array(
+						'username' => 'name',
+						'password' => 'password'
+					)
+				)
+			),
+			'authorize' => array('Controller')
+		)
+	);*/
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('add', 'logout');
+		$this->Auth->allow('login', 'add', 'logout');
 		$this->set('auth', $this->Auth->user());
-		$this->Auth->authenticate =array(
+		$this->Auth->authenticate = array(
+			'all' => array(
+				'userModel' => 'User'),
 			'Form' => array(
-				'passwordHasher' => 'Blowfish',
 				'fields' => array(
-					'username' => 'name', 'password' => 'password'
-				)
+					'username' => 'email', 'password' => 'password'
+				),
+				'passwordHasher' => 'Blowfish'
 			)
 		);
 	}
 	public function login() {
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
-				$this->redirect($this->Auth->redirect());
+		//	print_r($this->Auth->user());
+		//	exit();
+				$this->Flash->success(__('ようこそ「' . $this->Auth->user('name') . '」さん'));
+				return $this->redirect($this->Auth->redirectURL());
 			} else {
 				$this->Flash->error(__('Invalid'));
 			}
 		}
 	}
 	public function logout() {
+		$this->Flash->success(__('suc'));
 		$this->redirect($this->Auth->logout());
 	}
 	public function view($id = null) {
@@ -35,14 +66,19 @@ class UsersController extends AppController {
 	}
 	public function add() {
 		if ($this->request->is('post')) {
+			$data = $this->request->data;
+			$password = $data['User']['password'];
+			$passwordHasher = new BlowfishPasswordHasher();
+			$password = $passwordHasher->hash($password);
+			$data['User']['password'] = $password;
 			$this->User->create();
 			if ($this->User->save($this->request->data)) {
-			$this->Flash->success(__('The user has been saved'));
-			return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
-		}
-		$this->Flash->error(
-		__('The user could not be saved. Please, try again.')
-		);
+				$this->Flash->success(__('The user has been saved'));
+				return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
+			}
+			$this->Flash->error(
+				__('The user could not be saved. Please, try again.')
+			);
 		}
 	}
 	public function edit($id = null) {
@@ -56,7 +92,7 @@ class UsersController extends AppController {
 				return $this->redirect(array('action' => 'index'));
 			}
 			$this->Flash->error(
-			__('The user could not be saved. Please, try again.')
+				__('The user could not be saved. Please, try again.')
 			);
 		} else {
 			$this->request->data = $this->User->findById($id);
