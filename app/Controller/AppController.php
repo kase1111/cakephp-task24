@@ -33,7 +33,7 @@ App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 class AppController extends Controller {
 	public $uses = array('User');
 	public $helpers =array('Html', 'Form', 'Session');
-	public function isAuthorized($user) {
+/*	public function isAuthorized($user) {
 		if ($this->action === 'add') {
 			return true;
 		}
@@ -43,7 +43,7 @@ class AppController extends Controller {
 				return true;
 			}
 		}
-	}
+}*/
 	public $components = array('DebugKit.Toolbar', 'Flash', 'Session',
 		'Auth' => array(
 			'loginRedirect' => array(

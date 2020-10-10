@@ -35,13 +35,13 @@ class PostsController extends AppController {
 		if (!$post) {
 			throw new NotFoundException(__('Invalid post'));
 		}
-		if ($this->request->is(array('post', 'put'))) {
-			$this->Post->id = $id;
-				if ($this->Post->save($this->request->data)) {
-					$this->Flash->success(__('Your post has been updated.'));
+		if ($this->request->is(array('post', 'put')) ) {
+				$this->Post->id = $id;
+				if ($this->Post->save($this->request->data) && $post['Post']['user_id'] == $this->Auth->user('id')) {
+					$this->Flash->success(__('投稿内容を更新しました.'));
 					return $this->redirect(array('action' => 'index'));
 				}
-			$this->Flash->error(__('Unable to update your post.'));
+				$this->Flash->error(__('更新できません.'));
 		}
 		if (!$this->request->data) {
 			$this->request->data = $post;
@@ -52,9 +52,9 @@ class PostsController extends AppController {
 			throw new MethodNotAllowedException();
 		}
 		if ($this->Post->delete($id)) {
-			$this->Flash->success(__('The post with id: %s has been deleted.', h($id)));
+			$this->Flash->success(__('削除しました'));
 		} else {
-			$this->Flash->error(__('The post with id: %s could not be deleted.', h($id)));
+			$this->Flash->error(__('削除に失敗しました'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
@@ -67,8 +67,10 @@ class PostsController extends AppController {
 			if ($this->Post->isOwnedBy($postId, $user['id'])) {
 				return true;
 			}
+		$this->Flash->error(__('不正な操作です'));
+		return $this->redirect(array('action' => 'index'));
 		}
-		return parent::isAuthorized($user);
+	//	return parent::isAuthorized($user);
 	}
 }
 ?>

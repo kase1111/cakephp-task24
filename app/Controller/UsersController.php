@@ -2,30 +2,6 @@
 App::uses('AppController', 'Controller');
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Form', 'Flash');
-/*	public $components = array('Flash',
-		'Auth' => array(
-			'loginRedirect' => array(
-				'controller' => 'posts',
-				'action' => 'index'
-			),
-			'logoutRedirect' => array(
-			'controller' => 'posts',
-			'action' => 'index',
-			'home'
-			),
-			'authenticate' => array(
-				'Form' => array(
-					'userModel' => 'User',
-					'passwordHasher' => Blowfish,
-					'fields' => array(
-						'username' => 'name',
-						'password' => 'password'
-					)
-				)
-			),
-			'authorize' => array('Controller')
-		)
-	);*/
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('login', 'add', 'logout');
@@ -44,9 +20,7 @@ class UsersController extends AppController {
 	public function login() {
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
-		//	print_r($this->Auth->user());
-		//	exit();
-				$this->Flash->success(__('ようこそ「' . $this->Auth->user('name') . '」さん'));
+				$this->Flash->success(__('ログイン成功！'));
 				return $this->redirect($this->Auth->redirectURL());
 			} else {
 				$this->Flash->error(__('Invalid'));
@@ -54,7 +28,7 @@ class UsersController extends AppController {
 		}
 	}
 	public function logout() {
-		$this->Flash->success(__('suc'));
+		$this->Flash->success(__('ログアウトしました'));
 		$this->redirect($this->Auth->logout());
 	}
 	public function view($id = null) {
