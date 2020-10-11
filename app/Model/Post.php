@@ -18,6 +18,5 @@ class Post extends AppModel {
 			'fields' => array('User.name', 'User.id')
 		)
 	);
-	public $actAs = array('CakeSoftDelete.SoftDeletable');
 }
 ?>

@@ -8,11 +8,11 @@ class PostsController extends AppController {
 	}
 	public function view($id = null) {
 		if (!$id) {
-			throw new NotFoundException(__('Invalid post'));
+			throw new NotFoundException(__('エラー'));
 		}
 		$post = $this->Post->findById($id);
 		if (!$post) {
-			throw new NotFoundException(__('Invalid post'));
+			throw new NotFoundException(__('エラー'));
 		}
 		$this->set('post', $post);
 	}
@@ -21,45 +21,41 @@ class PostsController extends AppController {
 			$this->Post->create();
 			$this->request->data['Post']['user_id'] = $this->Auth->user('id');
 			if ($this->Post->save($this->request->data)) {
-				$this->Flash->success(__('Saved!'));
+				$this->Flash->success(__('投稿しました!'));
 				return $this->redirect(array('action' => 'index'));
 			}
-			$this->Flash->error(__('Unable'));
+			$this->Flash->error(__('投稿できません'));
 		}
 	}
 	public function edit($id = null) {
 		if (!$id) {
-			throw new NotFoundException(__('Invalid post'));
+			throw new NotFoundException(__('更新できません'));
 		}
 		$post = $this->Post->findById($id);
 		if (!$post) {
-			throw new NotFoundException(__('Invalid post'));
+			throw new NotFoundException(__('更新できません'));
 		}
-		if ($this->request->is(array('post', 'put')) ) {
-				$this->Post->id = $id;
-				if ($this->Post->save($this->request->data) && $post['Post']['user_id'] == $this->Auth->user('id')) {
-					$this->Flash->success(__('投稿内容を更新しました.'));
-					return $this->redirect(array('action' => 'index'));
-				}
-				$this->Flash->error(__('更新できません.'));
+		if ($this->request->is(array('post', 'put'))) {
+			$this->Post->id = $id;
+			if ($this->Post->save($this->request->data) && $post['Post']['user_id'] == $this->Auth->user('id')) {
+				$this->Flash->success(__('投稿内容を更新しました.'));
+				return $this->redirect(array('action' => 'index'));
+			}
+			$this->Flash->error(__('更新できません.'));
 		}
 		if (!$this->request->data) {
 			$this->request->data = $post;
 		}
 	}
-	public function delete($id) {
+	public function delete($id = null) {
 		if ($this->request->is('get')) {
 			throw new MethodNotAllowedException();
 		}
-		if ($this->request->is(array('post', 'put')) ) {
-				$this->Post->id = $id;
-				if ($this->Post->save($this->request->data)) {
-					$this->Flash->success(__('削除しましたよ'));
-					return $this->redirect(array('action' => 'index'));
-				}
-				$this->Flash->error(__('更新できません.'));
+		$post = $this->Post->findById($id);
+		if ($post['Post']['user_id'] == $this->Auth->user('id')) {
+			$post['Post']['deleted'] = 1;
 		}
-		if ($this->Post->delete($id)) {
+		if ($this->Post->save($post)) {
 			$this->Flash->success(__('削除しました'));
 		} else {
 			$this->Flash->error(__('削除に失敗しました'));
@@ -71,14 +67,13 @@ class PostsController extends AppController {
 			return true;
 		}
 		if (in_array($this->action, array('edit', 'delete'))) {
-			$postId = (int) $this->request->params['pass'][0];
+			$postId = (int)$this->request->params['pass'][0];
 			if ($this->Post->isOwnedBy($postId, $user['id'])) {
 				return true;
 			}
-		$this->Flash->error(__('不正な操作です'));
-		return $this->redirect(array('action' => 'index'));
+			$this->Flash->error(__('不正な操作です'));
+			return $this->redirect(array('action' => 'index'));
 		}
-	//	return parent::isAuthorized($user);
 	}
 }
 ?>

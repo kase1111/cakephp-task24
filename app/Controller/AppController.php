@@ -33,17 +33,6 @@ App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 class AppController extends Controller {
 	public $uses = array('User');
 	public $helpers =array('Html', 'Form', 'Session');
-/*	public function isAuthorized($user) {
-		if ($this->action === 'add') {
-			return true;
-		}
-		if (in_array($this->action, array('edit', 'delete'))) {
-			$postId = (int) $this->request->params['pass'][0];
-			if ($this->Post->isOwnedBy($postId, $user['id'])) {
-				return true;
-			}
-		}
-}*/
 	public $components = array('DebugKit.Toolbar', 'Flash', 'Session',
 		'Auth' => array(
 			'loginRedirect' => array(

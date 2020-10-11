@@ -20,7 +20,6 @@
  */
 
 App::uses('Model', 'Model');
-App::uses('SoftDeletableModel', 'CakeSoftDelete.Model');
 
 /**
  * Application model for Cake.
@@ -31,19 +30,5 @@ App::uses('SoftDeletableModel', 'CakeSoftDelete.Model');
  * @package       app.Model
  */
 class AppModel extends Model {
-	public function exists($id = null) {
-		if ($this->Behaviors->loaded('SoftDelete')) {
-			return $this->existsAndNotDeleted($id);
-		} else {
-			return parent::exists($id);
-		}
-	}
-	public function delete($id = null, $cascade = true) {
-		$result = parent::delete($id, $cascade);
-		if ($result === false && $this->Behaviors->enabled('SoftDelete')) {
-			return (bool)$this->field('deleted', array('deleted' => 1));
-		}
-		return $result;
-	}
 }
 ?>
