@@ -18,8 +18,6 @@ class Post extends AppModel {
 			'fields' => array('User.name', 'User.id')
 		)
 	);
-/*	public $actsAs = array('SoftDelete');
-	$this->Behaviors->detach('SoftDelete');
-	$posts = $this->Post->find('all', $params);*/
+	public $actAs = array('CakeSoftDelete.SoftDeletable');
 }
 ?>

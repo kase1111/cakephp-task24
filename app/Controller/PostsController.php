@@ -51,6 +51,14 @@ class PostsController extends AppController {
 		if ($this->request->is('get')) {
 			throw new MethodNotAllowedException();
 		}
+		if ($this->request->is(array('post', 'put')) ) {
+				$this->Post->id = $id;
+				if ($this->Post->save($this->request->data)) {
+					$this->Flash->success(__('削除しましたよ'));
+					return $this->redirect(array('action' => 'index'));
+				}
+				$this->Flash->error(__('更新できません.'));
+		}
 		if ($this->Post->delete($id)) {
 			$this->Flash->success(__('削除しました'));
 		} else {
