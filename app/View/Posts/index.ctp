@@ -46,10 +46,10 @@ echo $this->Html->link(
 <?php endif; ?>
 <table>
 <tr>
-<th>Name</th>
-<th>Title</th>
-<th>Message</th>
-<th>PostDate</th>
+<th>投稿者</th>
+<th>タイトル</th>
+<th>内容</th>
+<th>投稿日時</th>
 </tr>
 <?php foreach ($posts as $post): ?>
 <?php if ($post['Post']['deleted'] == 0): ?>

@@ -3,6 +3,7 @@
 <?php echo $this->Form->create('User'); ?>
 <fieldset>
 <legend>
+<h1>ログイン画面</h1>
 <?php echo __('メールアドレスとパスワードを入力してください'); ?>
 </legend>
 <?php

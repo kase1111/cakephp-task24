@@ -46,7 +46,7 @@ class AppController extends Controller {
 			),
 			'loginAction' => array(
 				'controller' => 'users',
-				'action' => 'login'
+				'action' => 'add'
 			),
 			'authenticate' => array(
 				'Form' => array(

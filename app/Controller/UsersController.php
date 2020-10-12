@@ -13,7 +13,7 @@ class UsersController extends AppController {
 				'fields' => array(
 					'username' => 'email',
 					'password' => 'password'
-				),
+				)
 			)
 		);
 	}
@@ -21,7 +21,7 @@ class UsersController extends AppController {
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
 				$this->Flash->success(__('ログイン成功！'));
-				return $this->redirect($this->Auth->redirectURL());
+				return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
 			} else {
 				$this->Flash->error(__('メールアドレスまたはパスワードが違います'));
 			}
@@ -31,19 +31,12 @@ class UsersController extends AppController {
 		$this->Flash->success(__('ログアウトしました'));
 		$this->redirect($this->Auth->logout());
 	}
-	public function view($id = null) {
-		$this->User->id = $id;
-		if (!$this->User->exists()) {
-			throw new NotFoundException(__('エラー'));
-		}
-		$this->set('user', $this->User->findById($id));
-	}
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->User->create();
 			if ($this->User->save($this->request->data)) {
 				$this->Flash->success(__('登録完了！'));
-				return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
+				return $this->redirect(array('action' => 'login'));
 			}
 			$this->Flash->error(__('登録失敗'));
 		}
@@ -55,10 +48,10 @@ class UsersController extends AppController {
 		}
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->User->save($this->request->data)) {
-				$this->Flash->success(__('The user has been saved'));
+				$this->Flash->success(__('ユーザー情報が更新されました'));
 				return $this->redirect(array('controller' => 'posts', 'action' => 'index'));
 			}
-			$this->Flash->error(__('The user could not be saved. Please, try again.'));
+			$this->Flash->error(__('更新できませんでした'));
 		} else {
 			$this->request->data = $this->User->findById($id);
 			unset($this->request->data['User']['password']);
@@ -66,7 +59,7 @@ class UsersController extends AppController {
 	}
 	public function delete($id = null) {
 		$this->request->allowMethod('post');
-		$this->User->id = $id;
+			$this->User->id = $id;
 		if (!$this->User->exists()) {
 			throw new NotFoundException(__('エラー'));
 		}

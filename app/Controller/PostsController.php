@@ -24,24 +24,27 @@ class PostsController extends AppController {
 				$this->Flash->success(__('投稿しました!'));
 				return $this->redirect(array('action' => 'index'));
 			}
-			$this->Flash->error(__('投稿できません'));
+			$this->Flash->error(__('投稿失敗'));
 		}
 	}
 	public function edit($id = null) {
-		if (!$id) {
-			throw new NotFoundException(__('更新できません'));
+		if (!$id ) {
+			throw new NotFoundException(__('エラー'));
 		}
 		$post = $this->Post->findById($id);
-		if (!$post) {
-			throw new NotFoundException(__('更新できません'));
+		if (!$post ) {
+			throw new NotFoundException(__('エラー'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
-			$this->Post->id = $id;
-			if ($this->Post->save($this->request->data) && $post['Post']['user_id'] == $this->Auth->user('id')) {
-				$this->Flash->success(__('投稿内容を更新しました.'));
-				return $this->redirect(array('action' => 'index'));
+			if ($this->request->data['Post']['id'] == $id) {
+				$this->Post->id = $id;
+				if ($this->Post->save($this->request->data) && $post['Post']['user_id'] == $this->Auth->user('id')) {
+					$this->Flash->success(__('投稿内容を更新しました'));
+					return $this->redirect(array('action' => 'index'));
+				}
+				$this->Flash->error(__('エラー'));
 			}
-			$this->Flash->error(__('更新できません.'));
+			$this->Flash->error(__('エラー'));
 		}
 		if (!$this->request->data) {
 			$this->request->data = $post;
